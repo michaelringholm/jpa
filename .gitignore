@@ -1,0 +1,5 @@
+target
+*.local
+application.properties
+.vscode
+.settings
