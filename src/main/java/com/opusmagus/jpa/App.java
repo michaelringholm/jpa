@@ -1,5 +1,10 @@
 package com.opusmagus.jpa;
 
+import java.io.File;
+
+import javax.annotation.PostConstruct;
+
+import org.aspectj.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -8,13 +13,30 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 //import com.microsoft.
 
+
+class Handler implements Thread.UncaughtExceptionHandler {	 
+	public void uncaughtException(Thread t, Throwable e) {
+		FileUtil.writeAsString(new File("c:\\data\\github\\jpa\\test.txt"), "hello");
+		System.err.println("BUUUH!");
+	}
+}
+
 @SpringBootApplication
 public class App {
 
 	private static final Logger log = LoggerFactory.getLogger(App.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {	
+		Handler globalExceptionHandler = new Handler();
+        Thread.setDefaultUncaughtExceptionHandler(globalExceptionHandler);	
 		SpringApplication.run(App.class);
+	}
+
+	@PostConstruct
+	public void init() {
+		Handler globalExceptionHandler = new Handler();
+        Thread.setDefaultUncaughtExceptionHandler(globalExceptionHandler);
+        //new GlobalExceptionHandler().performArithmeticOperation(10, 0);
 	}
 
 	@Bean
